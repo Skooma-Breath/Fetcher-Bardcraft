@@ -1,0 +1,34 @@
+name: Validate Bardcraft patch tooling
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Compile and test patch builder
+        shell: pwsh
+        run: |
+          python -m py_compile .\build_patch.py
+          python -m unittest discover -s .\tests -v
+
+      - name: Parse PowerShell tooling
+        shell: pwsh
+        run: |
+          $scripts = @(
+            '.\Apply-Fetcher-Bardcraft-MPPatch.ps1'
+            '.\release\Publish-FetcherBardcraftPatch.ps1'
+            '.\release\Publish-StableGitHubRelease.ps1'
+          )
+          foreach ($script in $scripts) {
+            [void][ScriptBlock]::Create((Get-Content -LiteralPath $script -Raw))
+            Write-Host "Parsed $script"
+          }
+
