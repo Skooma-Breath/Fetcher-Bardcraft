@@ -16,7 +16,10 @@ def file_map(root: Path) -> dict[str, Path]:
     return {
         path.relative_to(root).as_posix(): path
         for path in root.rglob("*")
-        if path.is_file() and ".git" not in path.parts
+        if path.is_file()
+        and ".git" not in path.parts
+        and ".fetcher-bardcraft-backups" not in path.parts
+        and not path.name.lower().endswith(".bak")
     }
 
 
@@ -192,8 +195,9 @@ def main() -> None:
 ============================================================
 
 This package contains hash-gated deltas for the Nexus-installed Bardcraft
-scripts. It does not contain Bardcraft meshes, sounds, MIDI files, plugins, or
-an independently usable copy of the upstream mod.
+files. It does not contain Bardcraft meshes, sounds, MIDI files, or an
+independently usable copy of the upstream mod. Some releases may include
+hash-gated deltas for Bardcraft.omwscripts and Bardcraft.ESP.
 
 Fetcher Bardcraft defaults to local song files with content-hash matching.
 Community MIDI packs must be installed separately; this patch does not

@@ -10,6 +10,7 @@ The builder requires:
 
 - an unmodified Nexus Bardcraft `scripts/Bardcraft` directory;
 - the Fetcher-modified client script directory;
+- pristine and Fetcher copies of any data-root files patched with `--extra-file`;
 - the previous released patch manifest when building an in-place upgrade.
 
 Example:
@@ -24,7 +25,10 @@ python .\build_patch.py `
   --previous-manifest C:\path\to\previous\fetcher-bardcraft-mp-patch.json `
   --extra-file Bardcraft.omwscripts `
     C:\path\to\vanilla\Bardcraft.omwscripts `
-    C:\path\to\fetcher\Bardcraft.omwscripts
+    C:\path\to\fetcher\Bardcraft.omwscripts `
+  --extra-file Bardcraft.ESP `
+    C:\path\to\vanilla\Bardcraft.ESP `
+    C:\path\to\fetcher\Bardcraft.ESP
 ```
 
 `priorOutputSha256` records allow known previous patch outputs to upgrade. The
@@ -36,8 +40,10 @@ modified upstream files from hash-verified pristine backups and refuses
 unknown or locally modified script hashes.
 
 Normal records target `scripts/Bardcraft`. `--extra-file` creates an explicit
-`targetBase: data` record for files such as `Bardcraft.omwscripts`; target paths
-are validated and cannot escape the Bardcraft data root.
+`targetBase: data` record for files such as `Bardcraft.omwscripts` and
+`Bardcraft.ESP`; target paths are validated and cannot escape the Bardcraft
+data root. Binary files are stored as hash-gated deltas, not as independently
+usable upstream assets.
 
 The builder writes a payload directory containing the manifest, applier, and
 README. After verifying that payload against a local tester installation,
