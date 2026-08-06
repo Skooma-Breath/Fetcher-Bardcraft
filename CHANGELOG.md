@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.21
+
+- Fix first-person, third-person, and hold-to-preview camera switching while the local player is performing.
+- Give Bardcraft exclusive camera-mode control only for the duration of a performance, then restore OpenMW's normal camera controller afterward.
+- Restart instrument animation and VFX after completed camera-mode changes without racing OpenMW's queued camera state.
+
 ## 2.0.20
 
 - Allow band leaders to start NPC-only or other-player-only performances without assigning an instrument to themselves.
