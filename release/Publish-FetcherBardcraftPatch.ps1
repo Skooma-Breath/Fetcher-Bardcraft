@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string] $PatchDirectory,
-    [string] $PatchVersion = "2.0.21",
+    [string] $PatchVersion = "2.0.22",
     [string] $Repository = "Skooma-Breath/Fetcher-Bardcraft",
     [string] $ReleaseTag = "fetcher-bardcraft-mp-patch-v2",
     [string] $OutputDirectory = ""

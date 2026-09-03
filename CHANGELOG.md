@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.22
+
+- Fix remote-player Bardcraft relay resolution so a sender-local actor ID can never resolve to the receiving client's own player.
+- Keep player performance relays pending until the remote performer is resolved by authoritative GUID or display name.
+
 ## 2.0.21
 
 - Fix first-person, third-person, and hold-to-preview camera switching while the local player is performing.
