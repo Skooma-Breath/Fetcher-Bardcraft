@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.23
+
+- Load community MIDI songs incrementally with a 2 ms cooperative frame budget,
+  including MIDI parsing, note conversion/sorting, compact encoding, and hashing.
+- Keep note ordering and song content hashes compatible with existing clients.
+- Store hosted songs individually and retain decoded playback caches as the
+  library grows, avoiding repeated full-library serialization during downloads.
+- Request one hosted song at a time. With the matching server scripts, receive
+  paced 16 KiB chunks shared fairly between downloading clients; retain support
+  for older servers' full-file responses.
+- Ignore stale transfer tokens and reuse unchanged locally cached songs.
+- Reduce MIDI import allocation pressure by batching checkpoint checks, allocating raw event tables only for retained events, reusing parsed note-event tables in `getNotes()`, and materializing paired note events with compact sort tokens instead of temporary tables.
+
 ## 2.0.22
 
 - Fix remote-player Bardcraft relay resolution so a sender-local actor ID can never resolve to the receiving client's own player.

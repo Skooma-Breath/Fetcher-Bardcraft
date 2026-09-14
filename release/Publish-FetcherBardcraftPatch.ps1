@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string] $PatchDirectory,
-    [string] $PatchVersion = "2.0.22",
+    [string] $PatchVersion = "2.0.23",
     [string] $Repository = "Skooma-Breath/Fetcher-Bardcraft",
     [string] $ReleaseTag = "fetcher-bardcraft-mp-patch-v2",
     [string] $OutputDirectory = ""
@@ -81,4 +81,3 @@ client so Bardcraft patch updates do not require a complete client download.
 finally {
     Pop-Location
 }
-
