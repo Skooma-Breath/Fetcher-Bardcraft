@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.24
+
+- Preserve the compact server-hosted MIDI cache when community mode is disabled, so OFF→ON no longer forces a full library re-download and reparse.
+- Reconcile `/bcrescan` differentially: reuse unchanged songs, remove songs missing from the authoritative catalog, and download only new or changed MIDI files.
+- Fingerprint hosted MIDI files so subsequent same-size replacements are detected without parsing the full catalog on the server.
+- Stop retaining every imported hosted song as an expanded decoded object; hosted decoded caches now use weak values and compact records decode lazily when needed.
+- Relay `/bcrescan` through Bardcraft's global script to the player script, with stale-token, timeout, cancellation, and duplicate-scan handling covered by regression tests.
+
 ## 2.0.23
 
 - Load community MIDI songs incrementally with a 2 ms cooperative frame budget,
