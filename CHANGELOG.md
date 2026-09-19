@@ -7,6 +7,7 @@
 - Fingerprint hosted MIDI files so subsequent same-size replacements are detected without parsing the full catalog on the server.
 - Stop retaining every imported hosted song as an expanded decoded object; hosted decoded caches now use weak values and compact records decode lazily when needed.
 - Relay `/bcrescan` through Bardcraft's global script to the player script, with stale-token, timeout, cancellation, and duplicate-scan handling covered by regression tests.
+- Include the already-tested MIDI import allocation/frame-budget optimizations that were present in the validated runtime but omitted from the published 2.0.23 payload: allocate retained MIDI event tables only when needed, reuse parsed note-event tables in `getNotes()`, materialize paired note events through compact sort tokens, and check the cooperative work deadline every 16 units instead of 128.
 
 ## 2.0.23
 
