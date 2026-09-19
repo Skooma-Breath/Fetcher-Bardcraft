@@ -100,6 +100,27 @@ assert(oldRecords[1].contentHash == result.record.contentHash)
 migrated.setRecords('songs/serverCustom', oldRecords, {preserveDecoded = true})
 assert(values['songs/serverCustomRecord:' .. result.record.id].contentHash == result.record.contentHash)
 assert(values['songs/serverCustom'] == nil)
+-- Decoding many hosted songs must not root every expanded note table forever.
+collectgarbage('collect')
+local beforeMemory = collectgarbage('count')
+local observed = setmetatable({}, {__mode = 'v'})
+local activeSong
+for i = 1, 12 do
+    local record = {}
+    for key, value in pairs(result.record) do record[key] = value end
+    record.id = 'server:memory-' .. i
+    activeSong = migrated.decodeRecord('songs/serverCustom', record)
+    observed[i] = activeSong
+end
+collectgarbage('collect')
+local retained = 0
+for _ in pairs(observed) do retained = retained + 1 end
+assert(retained == 1 and observed[12] == activeSong, 'hosted decoded cache retains inactive songs')
+activeSong = nil
+collectgarbage('collect')
+assert(next(observed) == nil, 'hosted decoded songs survived owner release')
+local afterMemory = collectgarbage('count')
+print(string.format('PASS: 12 x 60000-note decodes released; Lua heap before %.1f KB, after GC %.1f KB', beforeMemory, afterMemory))
 local malformed = Work.newJob(function(checkpoint)
     assert(MIDI.ParseMidiBytes('bad.mid', 'invalid', checkpoint), 'malformed MIDI')
 end, os.clock)

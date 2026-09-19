@@ -7,7 +7,7 @@ check intentionally compares against Lua 5.1/LuaJIT ordering):
 $bardcraftData = 'fetcher-simulator/Data Files/fetcher-simulator/Gameplay/BardcraftOpenMW'
 lua Fetcher-Bardcraft/tests/test_song_loading.lua $bardcraftData
 lua Fetcher-Bardcraft/tests/test_hosted_song_client.lua $bardcraftData
-lua Fetcher-Bardcraft/tests/test_hosted_midi_server.lua openmw/apps/openmw-server/scripts
+lua Fetcher-Bardcraft/tests/test_hosted_midi_server.lua fetcher-simulator/server-scripts
 python -m unittest discover -s Fetcher-Bardcraft/tests -p test_build_patch.py
 ```
 
@@ -23,9 +23,28 @@ with mocked engine APIs. It covers deferred parsing, chunk assembly, stale
 tokens, older server responses, sequential requests, cache reuse, and catalog
 removal. It uses the locally installed Greensleeves MIDI as a fixture.
 
+Hosted-cache lifecycle coverage also exercises OFF/ON persistence and visibility,
+manual scan duplicate suppression, timeouts, fingerprint changes at equal sizes,
+failed replacements, invalid MIDI, stale manifests, and disabled scans. A synthetic
+442-record compact catalog verifies zero downloads, parses, or payload rewrites
+on an unchanged scan and OFF/ON cycle, then exactly one of each for one new MIDI.
+The loading harness verifies that hosted weak decoded references release twelve
+60,000-note songs after playback owners release them.
+
 `test_hosted_midi_server.lua` checks the shared transfer budget, alternating
 receivers, cached disk reads, disconnect cancellation, disabled policy, and
 replacement of an older transfer.
+It also executes the production chat route and manifest adapter, checks non-admin
+help, deferred fingerprint scans, concurrent scan coalescing, TTL bypass,
+same-size replacements, and failed/disabled catalog responses.
+
+For this runtime patch, relog and restart the local test server to load the client
+and server script changes. `/bcrescan` never enables community mode. Test an
+unchanged scan, OFF/ON, and one newly added MIDI while observing the Lua profiler.
+The first scan adopts fingerprints for legacy size-only caches without a library
+reimport; same-size edits made before that adoption cannot be verified. Later
+scans compare fingerprints. Servers without this patch retain size-only matching
+and do not provide the new chat command.
 
 These checks do not measure actual OpenMW frame times or network conditions.
 The in-game acceptance check is `/bccommunity on` with an uncached character,
